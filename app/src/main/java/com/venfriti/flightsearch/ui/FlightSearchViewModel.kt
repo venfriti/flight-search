@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.venfriti.flightsearch.FlightSearchApplication
+import com.venfriti.flightsearch.data.Airport
 import com.venfriti.flightsearch.data.FlightDao
+import kotlinx.coroutines.flow.Flow
 
 
-class FlightSearchViewModel(private val flightDao: FlightDao): ViewModel() {
+class FlightSearchViewModel(private val flightDao: FlightDao): ViewModel(){
+
+    fun getFullList(): Flow<List<Airport>> = flightDao.getAllFlights()
 
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {
