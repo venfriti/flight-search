@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FlightSearch</string>
+    <string name="flights_from">Flights from %1$s</string>
 </resources>

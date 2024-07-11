@@ -1,6 +1,5 @@
 package com.venfriti.flightsearch.ui
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.venfriti.flightsearch.ui.screens.FlightHomeScreen
+import com.venfriti.flightsearch.ui.screens.FlightSearchViewModel
 import com.venfriti.flightsearch.ui.theme.lightBlue
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,25 +30,21 @@ fun FlightSearchApp(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { FlightTopAppBar(scrollBehavior = scrollBehavior )}
+        topBar = { FlightTopAppBar(scrollBehavior = scrollBehavior ) }
     ) {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
             FlightHomeScreen(
                 viewModel = viewModel,
-                contentPadding = it 
+                contentPadding = it
             )
         }
-        
+
     }
 
 }
 
-@Composable
-fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingValues) {
-    Text(text = "Hello, How are you doing")
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

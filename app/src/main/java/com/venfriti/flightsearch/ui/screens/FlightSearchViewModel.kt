@@ -1,4 +1,4 @@
-package com.venfriti.flightsearch.ui
+package com.venfriti.flightsearch.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
