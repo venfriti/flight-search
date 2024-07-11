@@ -2,15 +2,19 @@ package com.venfriti.flightsearch.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.venfriti.flightsearch.R
+import com.venfriti.flightsearch.ui.theme.backgroundBlue
 
 
 @Composable
@@ -33,28 +38,39 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     Column(
         modifier = Modifier.padding(contentPadding)
     ) {
+        var holder by rememberSaveable { mutableStateOf("") }
+        SearchBar(hint = "Search...", onSearch = { holder = it }, onValueChange = {holder = it})
+        FlightTitle(holder)
         Text(
             text = "Hello, How are you doing",
             modifier = Modifier.padding(16.dp),
         )
-        FlightTitle("FCO")
-        SearchBar(hint = "Search...", onSearch = {})
-    }
 
+    }
 }
 
+
 @Composable
-fun SearchBar(hint: String, onSearch: (String) -> Unit ) {
-    var text by rememberSaveable {mutableStateOf("")}
+fun SearchBar(
+    hint: String, onSearch: (String) -> Unit, onValueChange: (String) -> Unit
+) {
+
+    var text by rememberSaveable { mutableStateOf("") }
 
     TextField(
         value = text,
-        onValueChange = { text = it},
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        onValueChange = { text = it
+            onValueChange(text) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .height(55.dp),
         placeholder = { Text(text = hint) },
-        singleLine = true,  
+        singleLine = true,
         maxLines = 1,
         colors = TextFieldDefaults.colors(
+            focusedContainerColor = backgroundBlue,
+            unfocusedContainerColor = backgroundBlue,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),
@@ -68,20 +84,19 @@ fun SearchBar(hint: String, onSearch: (String) -> Unit ) {
         ),
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
+                imageVector = Icons.Filled.Search,
                 contentDescription = "SearchIcon"
             )
         },
         trailingIcon = {
-            if (text.isNotEmpty()) {
-                IconButton(onClick = {text = ""}) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Clear Text"
-                    )
-                }
+            IconButton(onClick = {}) {
+                Icon(
+                    imageVector = Icons.Filled.Mic,
+                    contentDescription = "Clear Text"
+                )
             }
-        }
+        },
+        shape = ShapeDefaults.ExtraLarge
     )
 }
 
