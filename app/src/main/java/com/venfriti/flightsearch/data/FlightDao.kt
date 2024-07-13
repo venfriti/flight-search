@@ -12,4 +12,7 @@ interface FlightDao{
 
     @Query("SELECT * FROM favorite_table ORDER BY id ASC")
     fun getAllFavorites(): Flow<List<Favorite>>
+
+    @Query("SELECT * FROM airport_table WHERE name LIKE '%' || :searchName || '%'")
+    fun getAirport(searchName: String): Flow<List<Airport>>
 }

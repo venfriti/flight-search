@@ -2,14 +2,13 @@ package com.venfriti.flightsearch.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -28,8 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.venfriti.flightsearch.R
+import com.venfriti.flightsearch.data.Airport
 import com.venfriti.flightsearch.ui.theme.backgroundBlue
 
 
@@ -38,23 +39,21 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     Column(
         modifier = Modifier.padding(contentPadding)
     ) {
+        val test1 = Airport(3, "CFC", "Central Cafe", 500)
         var holder by rememberSaveable { mutableStateOf("") }
-        SearchBar(hint = "Search...", onSearch = { holder = it }, onValueChange = {holder = it})
-        FlightTitle(holder)
-        Text(
-            text = "Hello, How are you doing",
-            modifier = Modifier.padding(16.dp),
-        )
-
+        SearchBar(onSearch = { holder = it }, onValueChange = {holder = it})
+//        FlightTitle(holder)
+        AirportTitle(test1)
     }
 }
 
 
 @Composable
 fun SearchBar(
-    hint: String, onSearch: (String) -> Unit, onValueChange: (String) -> Unit
+    onSearch: (String) -> Unit, onValueChange: (String) -> Unit
 ) {
 
+    val hint = "Search..."
     var text by rememberSaveable { mutableStateOf("") }
 
     TextField(
@@ -92,7 +91,7 @@ fun SearchBar(
             IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Filled.Mic,
-                    contentDescription = "Clear Text"
+                    contentDescription = "MicrophoneIcon"
                 )
             }
         },
@@ -108,4 +107,37 @@ fun FlightTitle(flight: String) {
         fontWeight = FontWeight.SemiBold,
         modifier = Modifier.padding(horizontal = 16.dp)
     )
+}
+
+@Composable
+fun AirportTitle(airport: Airport) {
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = airport.iataCode, Modifier.padding(horizontal = 8.dp),
+            fontWeight = FontWeight.Black,
+        )
+        Text(text = airport.name, fontWeight = FontWeight.Light)
+    }
+}
+
+@Composable
+fun AirportTitleList(airportList: Airport){
+
+}
+
+@Preview
+@Composable
+fun SearchBarPreview() {
+    SearchBar(onSearch = { }, onValueChange = { })
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AirportTitlePreview() {
+    val airport1 = Airport(3, "CFC", "Central Cafe", 500)
+    AirportTitle(airport1)
 }

@@ -1,5 +1,6 @@
 package com.venfriti.flightsearch.ui.screens
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -8,19 +9,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.venfriti.flightsearch.FlightSearchApplication
 import com.venfriti.flightsearch.data.Airport
 import com.venfriti.flightsearch.data.FlightDao
+import com.venfriti.flightsearch.data.FlightRepository
 import kotlinx.coroutines.flow.Flow
 
 
-class FlightSearchViewModel(private val flightDao: FlightDao): ViewModel(){
+class FlightSearchViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val flightRepository: FlightRepository
+): ViewModel(){
 
-    fun getFullList(): Flow<List<Airport>> = flightDao.getAllFlights()
 
-    companion object {
-        val factory : ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as FlightSearchApplication)
-                FlightSearchViewModel(application.database.flightDao())
-            }
-        }
-    }
+
 }

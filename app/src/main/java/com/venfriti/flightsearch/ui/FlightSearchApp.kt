@@ -24,9 +24,8 @@ import com.venfriti.flightsearch.ui.theme.lightBlue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchApp(
-    viewModel: FlightSearchViewModel = viewModel(factory = FlightSearchViewModel.factory)
+    viewModel: FlightSearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val fullSchedule by viewModel.getFullList().collectAsState(initial = emptyList())
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
