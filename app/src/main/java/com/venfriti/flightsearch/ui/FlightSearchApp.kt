@@ -27,6 +27,7 @@ fun FlightSearchApp(
     viewModel: FlightSearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val airportUiState by viewModel.airportUiState.collectAsState()
+    val listOfAirports = airportUiState.airportList
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

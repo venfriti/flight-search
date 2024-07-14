@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "airport_table")
+@Entity(tableName = "airport")
 data class Airport(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "iata_code") val iataCode: String,
@@ -13,7 +13,7 @@ data class Airport(
     @ColumnInfo(name = "passengers") val passengers: Int,
 )
 
-@Entity(tableName = "favorite_table")
+@Entity(tableName = "favorite")
 data class Favorite(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "departure_code") val departureCode: String,

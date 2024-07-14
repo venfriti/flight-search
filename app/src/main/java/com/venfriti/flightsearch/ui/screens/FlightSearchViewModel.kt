@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 
 class FlightSearchViewModel(
     savedStateHandle: SavedStateHandle,
-    private val flightRepository: FlightRepository
+    flightRepository: FlightRepository
 ): ViewModel(){
 
     val airportUiState: StateFlow<AirportUiState> =
