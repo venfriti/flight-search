@@ -6,4 +6,6 @@ interface FlightRepository {
 
     fun getAirport(searchName: String): Flow<List<Airport>?>
 
+    fun getAllAirports(): Flow<List<Airport>>
+
 }

@@ -26,6 +26,7 @@ import com.venfriti.flightsearch.ui.theme.lightBlue
 fun FlightSearchApp(
     viewModel: FlightSearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val airportUiState by viewModel.airportUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

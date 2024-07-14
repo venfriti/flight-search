@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -39,11 +42,21 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     Column(
         modifier = Modifier.padding(contentPadding)
     ) {
-        val test1 = Airport(3, "CFC", "Central Cafe", 500)
+//        val test1 = Airport(3, "CFC", "Central Cafe", 500)
+        val airports = listOf<Airport>(
+            Airport(1, "CFC", "Central cafe", 1000),
+            Airport(2, "CFD", "Cengral cafe", 1000),
+            Airport(3, "CFE", "Cengral cafe", 1000),
+            Airport(4, "CFF", "Cengral cafe", 1000),
+            Airport(5, "CFG", "Cengral cafe", 1000),
+            Airport(6, "CFH", "Cengral cafe", 1000),
+            Airport(7, "CFI", "Cengral cafe", 1000),
+        )
         var holder by rememberSaveable { mutableStateOf("") }
         SearchBar(onSearch = { holder = it }, onValueChange = {holder = it})
 //        FlightTitle(holder)
-        AirportTitle(test1)
+//        AirportTitle(test1)
+        AirportGridList(airports)
     }
 }
 
@@ -113,19 +126,38 @@ fun FlightTitle(flight: String) {
 fun AirportTitle(airport: Airport) {
     Row(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
             .fillMaxWidth()
     ) {
         Text(
-            text = airport.iataCode, Modifier.padding(horizontal = 8.dp),
+            text = airport.iataCode,
             fontWeight = FontWeight.Black,
         )
-        Text(text = airport.name, fontWeight = FontWeight.Light)
+        Text(
+            text = airport.name,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            fontWeight = FontWeight.Light
+        )
     }
 }
 
 @Composable
-fun AirportTitleList(airportList: Airport){
+fun AirportGridList(
+    airports: List<Airport>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+){
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(1),
+        modifier = modifier,
+        contentPadding = contentPadding
+    ) {
+        items(items = airports, key = {airport: Airport -> airport.id }) {
+            airport -> AirportTitle(
+                airport
+            )
+        }
+    }
 
 }
 
@@ -140,4 +172,19 @@ fun SearchBarPreview() {
 fun AirportTitlePreview() {
     val airport1 = Airport(3, "CFC", "Central Cafe", 500)
     AirportTitle(airport1)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GridListPreview() {
+    val airports = listOf<Airport>(
+        Airport(1, "CFC", "Central cafe", 1000),
+        Airport(2, "CFD", "Cengral cafe", 1000),
+        Airport(3, "CFE", "Cengral cafe", 1000),
+        Airport(4, "CFF", "Cengral cafe", 1000),
+        Airport(5, "CFG", "Cengral cafe", 1000),
+        Airport(6, "CFH", "Cengral cafe", 1000),
+        Airport(7, "CFI", "Cengral cafe", 1000),
+    )
+    AirportGridList(airports)
 }
