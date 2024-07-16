@@ -1,6 +1,6 @@
 package com.venfriti.flightsearch.ui.screens
 
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,14 +15,15 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Sd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -44,8 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.venfriti.flightsearch.R
 import com.venfriti.flightsearch.data.Airport
+import com.venfriti.flightsearch.ui.theme.PurpleGrey40
 import com.venfriti.flightsearch.ui.theme.backgroundBlue
 import com.venfriti.flightsearch.ui.theme.backgroundGrey
+import com.venfriti.flightsearch.ui.theme.starFavoriteBackground
 
 
 @Composable
@@ -137,15 +140,56 @@ fun AirportTitle(airport: Airport) {
         Text(
             text = airport.iataCode,
             fontWeight = FontWeight.Black,
-            fontSize = 13.sp
+            fontSize = 13.sp,
+            lineHeight = 13.sp
         )
         Text(
             text = airport.name,
             modifier = Modifier.padding(horizontal = 8.dp),
             fontWeight = FontWeight.Light,
-            fontSize = 13.sp
+            fontSize = 13.sp,
+            lineHeight = 13.sp
         )
     }
+}
+
+@Composable
+fun FavoriteIcon(
+    modifier: Modifier = Modifier,
+    isFavoriteInitially: Boolean = false,
+    onFavorite: () -> Unit,
+    onUnFavorite: () -> Unit
+) {
+    var isFavorite by rememberSaveable { mutableStateOf(isFavoriteInitially) }
+
+    IconButton(
+        onClick = {
+            isFavorite = !isFavorite
+            if (isFavorite) {
+                onFavorite()
+            } else {
+                onUnFavorite()
+            }
+        },
+        modifier = modifier
+    ) {
+        if (isFavorite) {
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = "Favorite",
+                tint = starFavoriteBackground,
+                modifier = modifier
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = "Not Favorite",
+                tint = PurpleGrey40 ,
+                modifier = modifier
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -156,39 +200,31 @@ fun TransitAirport(
 ){
     Card(
         modifier = modifier
-            .padding(8.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
             .fillMaxWidth()
-//            .background(backgroundGrey)
     ) {
         Row(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column( modifier = Modifier.fillMaxWidth(0.85f)) {
                 Text(
                     text = "DEPART",
-                    Modifier.padding(top = 2.dp, start = 16.dp, end = 16.dp, bottom = 4.dp),
+                    Modifier.padding(top = 8.dp , start = 16.dp, end = 16.dp, bottom = 8.dp),
                     fontSize = 13.sp,
+                    lineHeight = 13.sp
                 )
                 AirportTitle(airport1)
-                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = "ARRIVE",
-                    Modifier.padding(top = 2.dp, start = 16.dp, end = 16.dp, bottom = 4.dp),
-                    fontSize = 13.sp
+                    Modifier.padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    fontSize = 13.sp,
+                    lineHeight = 13.sp
                 )
                 AirportTitle(airport2)
+                Spacer(Modifier.height(8.dp))
             }
-            IconButton(
-                onClick = {},
-                enabled = true
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Star,
-                    contentDescription = "MicrophoneIcon",
-                    modifier = Modifier.size(100.dp)
-                )
-            }
+            FavoriteIcon(modifier = Modifier.size(35.dp), onFavorite = {}, onUnFavorite = {})
         }
     }
 }
