@@ -15,15 +15,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,10 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.venfriti.flightsearch.R
 import com.venfriti.flightsearch.data.Airport
+import com.venfriti.flightsearch.data.FlightRepository
 import com.venfriti.flightsearch.ui.theme.PurpleGrey40
 import com.venfriti.flightsearch.ui.theme.backgroundBlue
-import com.venfriti.flightsearch.ui.theme.backgroundGrey
 import com.venfriti.flightsearch.ui.theme.starFavoriteBackground
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 
 
 @Composable
@@ -58,13 +57,19 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     ) {
         val airportUiState by viewModel.airportUiState.collectAsState()
         val listOfAirports = airportUiState.airportList
+        val idea = "Int"
+
+        val secondList = viewModel.searchResults(idea)
+        val secondLists by viewModel.searchResults(idea).collectAsState()
+        val check = secondLists.airportList
+
         val airport1 = Airport(1, "CFC", "Central cafe", 1000)
         val airport2 = Airport(2, "CFD", "Cengral cafe", 1000)
         var holder by rememberSaveable { mutableStateOf("") }
         SearchBar(onSearch = { holder = it }, onValueChange = {holder = it})
-        TransitAirport(airport1, airport2)
+//        TransitAirport(airport1, airport2)
 //        FlightTitle(holder)
-//        AirportGridList(listOfAirports)
+        AirportGridList(check)
     }
 }
 
@@ -131,9 +136,9 @@ fun FlightTitle(flight: String) {
 }
 
 @Composable
-fun AirportTitle(airport: Airport) {
+fun AirportTitle(airport: Airport, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
     ) {
@@ -242,7 +247,8 @@ fun AirportGridList(
     ) {
         items(items = airports, key = {airport: Airport -> airport.id }) {
             airport -> AirportTitle(
-                airport
+                airport,
+                modifier.padding(vertical = 5.dp)
             )
         }
     }
@@ -258,8 +264,8 @@ fun SearchBarPreview() {
 @Preview(showBackground = true)
 @Composable
 fun TransitAirportPreview() {
-    val airport1 = Airport(1, "CFC", "Central cafe", 1000)
-    val airport2 = Airport(2, "CFD", "Cengral cafe", 1000)
+    val airport1 = Airport(1, "CFC", "Central cafe 1", 1000)
+    val airport2 = Airport(2, "CFD", "Central cafe 2", 1000)
     TransitAirport(airport1, airport2)
 }
 
@@ -274,13 +280,13 @@ fun AirportTitlePreview() {
 @Composable
 fun GridListPreview() {
     val airports = listOf<Airport>(
-        Airport(1, "CFC", "Central cafe", 1000),
-        Airport(2, "CFD", "Cengral cafe", 1000),
-        Airport(3, "CFE", "Cengral cafe", 1000),
-        Airport(4, "CFF", "Cengral cafe", 1000),
-        Airport(5, "CFG", "Cengral cafe", 1000),
-        Airport(6, "CFH", "Cengral cafe", 1000),
-        Airport(7, "CFI", "Cengral cafe", 1000),
+        Airport(1, "CFC", "Central cafe 1", 1000),
+        Airport(2, "CFD", "Central cafe 2", 1000),
+        Airport(3, "CFE", "Central cafe 3", 1000),
+        Airport(4, "CFF", "Central cafe 4", 1000),
+        Airport(5, "CFG", "Central cafe 5", 1000),
+        Airport(6, "CFH", "Central cafe 6", 1000),
+        Airport(7, "CFI", "Central cafe 7", 1000),
     )
     AirportGridList(airports)
 }
