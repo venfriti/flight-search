@@ -41,18 +41,6 @@ class FlightSearchViewModel(
             )
     }
 
-//    private val privateFlightRepository = flightRepository
-//    val searchUiState = fun(search: String): StateFlow<AirportUiState> {
-//        val searchList : StateFlow<AirportUiState> =
-//            privateFlightRepository.getAirport(search).map { AirportUiState(it ?: emptyList()) }
-//                .stateIn(
-//                    scope = viewModelScope,
-//                    started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-//                    initialValue = AirportUiState()
-//                )
-//        return searchList
-//    }
-
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }

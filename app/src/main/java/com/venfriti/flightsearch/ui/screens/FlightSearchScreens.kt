@@ -1,6 +1,7 @@
 package com.venfriti.flightsearch.ui.screens
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -42,12 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.venfriti.flightsearch.R
 import com.venfriti.flightsearch.data.Airport
-import com.venfriti.flightsearch.data.FlightRepository
 import com.venfriti.flightsearch.ui.theme.PurpleGrey40
 import com.venfriti.flightsearch.ui.theme.backgroundBlue
 import com.venfriti.flightsearch.ui.theme.starFavoriteBackground
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 
 
 @Composable
@@ -57,8 +56,8 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     ) {
         val airportUiState by viewModel.airportUiState.collectAsState()
         val listOfAirports = airportUiState.airportList
-        var searchString by rememberSaveable { mutableStateOf("") }
 
+        var searchString by rememberSaveable { mutableStateOf("") }
         val searchUiState by viewModel.secondOption(searchString).collectAsState()
         val searchList = searchUiState.airportList
 
@@ -71,7 +70,7 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
         })
 //        TransitAirport(airport1, airport2)
 //        FlightTitle(holder)
-        AirportGridList(searchList)
+        AirportGridList(searchList, onItemClick = { })
     }
 }
 
@@ -146,6 +145,7 @@ fun AirportTitle(airport: Airport, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = airport.iataCode,
+            modifier = Modifier.width(40.dp),
             fontWeight = FontWeight.Black,
             fontSize = 13.sp,
             lineHeight = 13.sp
@@ -239,6 +239,7 @@ fun TransitAirport(
 @Composable
 fun AirportGridList(
     airports: List<Airport>,
+    onItemClick: (Airport) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
@@ -250,7 +251,9 @@ fun AirportGridList(
         items(items = airports, key = {airport: Airport -> airport.id }) {
             airport -> AirportTitle(
                 airport,
-                modifier.padding(vertical = 5.dp)
+                modifier
+                    .clickable { onItemClick(airport) }
+                    .padding(vertical = 5.dp)
             )
         }
     }
@@ -290,5 +293,5 @@ fun GridListPreview() {
         Airport(6, "CFH", "Central cafe 6", 1000),
         Airport(7, "CFI", "Central cafe 7", 1000),
     )
-    AirportGridList(airports)
+    AirportGridList(airports, onItemClick = { })
 }
