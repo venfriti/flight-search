@@ -57,19 +57,21 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     ) {
         val airportUiState by viewModel.airportUiState.collectAsState()
         val listOfAirports = airportUiState.airportList
-        val idea = "Int"
+        var searchString by rememberSaveable { mutableStateOf("") }
 
-        val secondList = viewModel.searchResults(idea)
-        val secondLists by viewModel.searchResults(idea).collectAsState()
-        val check = secondLists.airportList
+        val searchUiState by viewModel.secondOption(searchString).collectAsState()
+        val searchList = searchUiState.airportList
 
         val airport1 = Airport(1, "CFC", "Central cafe", 1000)
         val airport2 = Airport(2, "CFD", "Cengral cafe", 1000)
         var holder by rememberSaveable { mutableStateOf("") }
-        SearchBar(onSearch = { holder = it }, onValueChange = {holder = it})
+        SearchBar(onSearch = { holder = it }, onValueChange = {
+            holder = it
+            searchString = it
+        })
 //        TransitAirport(airport1, airport2)
 //        FlightTitle(holder)
-        AirportGridList(check)
+        AirportGridList(searchList)
     }
 }
 
