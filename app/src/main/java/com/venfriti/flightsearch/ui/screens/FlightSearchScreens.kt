@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -54,23 +56,24 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     Column(
         modifier = Modifier.padding(contentPadding)
     ) {
-        val airportUiState by viewModel.airportUiState.collectAsState()
-        val listOfAirports = airportUiState.airportList
+        val searchQuery by viewModel.searchQuery.collectAsState()
+        val searchResults by viewModel.searchResults.collectAsState(initial = emptyList())
 
-        var searchString by rememberSaveable { mutableStateOf("") }
-        val searchUiState by viewModel.secondOption(searchString).collectAsState()
-        val searchList = searchUiState.airportList
+//        var searchString by rememberSaveable { mutableStateOf("") }
+//        val searchUiState by viewModel.secondOption(searchString).collectAsState()
+//        val searchList = searchUiState.airportList
 
         val airport1 = Airport(1, "CFC", "Central cafe", 1000)
         val airport2 = Airport(2, "CFD", "Cengral cafe", 1000)
         var holder by rememberSaveable { mutableStateOf("") }
         SearchBar(onSearch = { holder = it }, onValueChange = {
             holder = it
-            searchString = it
+            viewModel.setSearchQuery(it)
         })
 //        TransitAirport(airport1, airport2)
 //        FlightTitle(holder)
-        AirportGridList(searchList, onItemClick = { })
+//        AirportGridList(searchList, onItemClick = { })
+        TransitGridList(airport1, searchResults?: emptyList())
     }
 }
 
@@ -152,7 +155,6 @@ fun AirportTitle(airport: Airport, modifier: Modifier = Modifier) {
         )
         Text(
             text = airport.name,
-            modifier = Modifier.padding(horizontal = 8.dp),
             fontWeight = FontWeight.Light,
             fontSize = 13.sp,
             lineHeight = 13.sp
@@ -232,6 +234,25 @@ fun TransitAirport(
                 Spacer(Modifier.height(8.dp))
             }
             FavoriteIcon(modifier = Modifier.size(35.dp), onFavorite = {}, onUnFavorite = {})
+        }
+    }
+}
+
+@Composable
+fun TransitGridList(
+    port: Airport,
+    airports: List<Airport>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+) {
+    LazyColumn(
+//        columns = GridCells.Fixed(1),
+        modifier = modifier,
+        contentPadding = contentPadding
+    ) {
+        items(items = airports, key = {airport: Airport -> airport.id}) {
+            airport ->
+            TransitAirport(port, airport, modifier)
         }
     }
 }
