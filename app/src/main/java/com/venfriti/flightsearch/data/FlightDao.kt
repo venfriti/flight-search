@@ -1,6 +1,9 @@
 package com.venfriti.flightsearch.data
 
 import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -15,4 +18,10 @@ interface FlightDao{
 
     @Query("SELECT * FROM airport WHERE name LIKE '%' || :searchName || '%'")
     fun getAirport(searchName: String): Flow<List<Airport>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addToFavorites(favorite: Favorite)
+
+    @Delete
+    suspend fun removeFromFavorites(favorite: Favorite)
 }

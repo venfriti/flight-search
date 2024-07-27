@@ -24,45 +24,28 @@ import kotlinx.coroutines.flow.stateIn
 class FlightSearchViewModel(
     savedStateHandle: SavedStateHandle,
     flightRepository: FlightRepository
-): ViewModel(){
+): ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
+
+    val flightList = flightRepository.getAllAirports()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val searchResults = _searchQuery.flatMapLatest { query ->
         flightRepository.getAirport(query)
     }
+
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
 
-//    val airportUiState: StateFlow<AirportUiState> =
-//        flightRepository.getAllAirports().map { AirportUiState(it) }
-//            .stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-//                initialValue = AirportUiState()
-//            )
-//
-//
-//    val secondOption : (search: String) -> StateFlow<AirportUiState> = { search ->
-//        flightRepository.getAirport(search).map { AirportUiState(it ?: emptyList()) }
-//            .stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.Eagerly,
-//                initialValue = AirportUiState()
-//            )
-//    }
+    fun addToFavorites(airport: Airport){
 
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
     }
 
+    fun removeFromFavorites(airport: Airport){
 
+    }
 
 }
-
-data class AirportUiState(
-    val airportList: List<Airport> = listOf()
-)

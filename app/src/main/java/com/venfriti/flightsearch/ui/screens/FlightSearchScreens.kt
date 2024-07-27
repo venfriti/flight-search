@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.venfriti.flightsearch.R
 import com.venfriti.flightsearch.data.Airport
+import com.venfriti.flightsearch.data.AirportSaver
 import com.venfriti.flightsearch.ui.theme.PurpleGrey40
 import com.venfriti.flightsearch.ui.theme.backgroundBlue
 import com.venfriti.flightsearch.ui.theme.starFavoriteBackground
@@ -58,29 +60,36 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
     ) {
         val searchQuery by viewModel.searchQuery.collectAsState()
         val searchResults by viewModel.searchResults.collectAsState(initial = emptyList())
+        val flightList by viewModel.flightList.collectAsState(initial = emptyList())
+        var show by rememberSaveable { mutableStateOf(true) }
 
-//        var searchString by rememberSaveable { mutableStateOf("") }
-//        val searchUiState by viewModel.secondOption(searchString).collectAsState()
-//        val searchList = searchUiState.airportList
 
-        val airport1 = Airport(1, "CFC", "Central cafe", 1000)
+        var airport1 by rememberSaveable(stateSaver = AirportSaver) { mutableStateOf(Airport(1, "CFD", "Central cafe", 1000)) }
         val airport2 = Airport(2, "CFD", "Cengral cafe", 1000)
         var holder by rememberSaveable { mutableStateOf("") }
+
         SearchBar(onSearch = { holder = it }, onValueChange = {
             holder = it
             viewModel.setSearchQuery(it)
         })
 //        TransitAirport(airport1, airport2)
-//        FlightTitle(holder)
-//        AirportGridList(searchList, onItemClick = { })
-        TransitGridList(airport1, searchResults?: emptyList())
+        if (show){
+            FlightTitle(holder)
+            AirportGridList(searchResults?: emptyList(), onItemClick = {
+                airport1 = it
+                show = false
+            })
+        } else {
+            TransitGridList(airport1, flightList)
+        }
     }
 }
 
 
 @Composable
 fun SearchBar(
-    onSearch: (String) -> Unit, onValueChange: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onValueChange: (String) -> Unit
 ) {
 
     val hint = "Search..."
@@ -88,8 +97,10 @@ fun SearchBar(
 
     TextField(
         value = text,
-        onValueChange = { text = it
-            onValueChange(text) },
+        onValueChange = {
+            text = it
+            onValueChange(text)
+                        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
