@@ -19,6 +19,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
@@ -39,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -68,35 +72,53 @@ fun FlightHomeScreen(viewModel: FlightSearchViewModel, contentPadding: PaddingVa
         val airport2 = Airport(2, "CFD", "Cengral cafe", 1000)
         var holder by rememberSaveable { mutableStateOf("") }
 
-        SearchBar(onSearch = { holder = it }, onValueChange = {
-            holder = it
-            viewModel.setSearchQuery(it)
-        })
+        SearchBar(
+            searchQuery = holder,
+            onSearch = { holder = it },
+            onValueChange = {
+                show = true
+                holder = it
+                viewModel.setSearchQuery(it)
+            },
+            onClear = {
+                show = true
+                holder = ""
+            }
+        )
 //        TransitAirport(airport1, airport2)
         if (show){
-            FlightTitle(holder)
             AirportGridList(searchResults?: emptyList(), onItemClick = {
                 airport1 = it
+                holder = airport1.iataCode
                 show = false
             })
         } else {
+            HideKeyboard()
+            FlightTitle(holder)
             TransitGridList(airport1, flightList)
         }
     }
 }
 
+@Composable
+fun HideKeyboard() {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    keyboardController?.hide()
+}
 
 @Composable
 fun SearchBar(
+    searchQuery: String,
     onSearch: (String) -> Unit,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onClear: () -> Unit
 ) {
 
     val hint = "Search..."
     var text by rememberSaveable { mutableStateOf("") }
 
     TextField(
-        value = text,
+        value = searchQuery,
         onValueChange = {
             text = it
             onValueChange(text)
@@ -129,10 +151,10 @@ fun SearchBar(
             )
         },
         trailingIcon = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = onClear) {
                 Icon(
-                    imageVector = Icons.Filled.Mic,
-                    contentDescription = "MicrophoneIcon"
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "Clear Search"
                 )
             }
         },
@@ -257,11 +279,11 @@ fun TransitGridList(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     LazyColumn(
-//        columns = GridCells.Fixed(1),
         modifier = modifier,
         contentPadding = contentPadding
     ) {
-        items(items = airports, key = {airport: Airport -> airport.id}) {
+        val listAirports = airports.minus(port)
+        items(items = listAirports, key = {airport: Airport -> airport.id}) {
             airport ->
             TransitAirport(port, airport, modifier)
         }
@@ -295,7 +317,7 @@ fun AirportGridList(
 @Preview
 @Composable
 fun SearchBarPreview() {
-    SearchBar(onSearch = { }, onValueChange = { })
+    SearchBar(searchQuery = "checker", onSearch = { }, onValueChange = { }, onClear = {})
 }
 
 @Preview(showBackground = true)
